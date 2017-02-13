@@ -6,13 +6,13 @@
 
 'use strict';
 
-module.exports = EdgeReference;
-
 class EdgeReference {
   constructor(assemblyInfo) {
     
   }
 }
+
+// module.exports = EdgeReference;
 
 /*
 Generate a .NET assembly

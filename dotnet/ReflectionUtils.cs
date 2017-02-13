@@ -15,7 +15,7 @@ namespace EdgeReference
     }
 
     public static string ConvertFullName(string fullName) {
-      return type.FullName.replace('.', '-');
+      return fullName.Replace('.', '-');
     }
   }
 }

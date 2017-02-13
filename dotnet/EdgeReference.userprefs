@@ -2,15 +2,15 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="ProxyGenerator.cs">
     <Files>
-      <File FileName="ReferenceManager.cs" Line="1" Column="1" />
-      <File FileName="ProxyGenerator.cs" Line="123" Column="38" />
+      <File FileName="ReferenceManager.cs" Line="61" Column="42" />
+      <File FileName="ProxyGenerator.cs" Line="41" Column="19" />
+      <File FileName="JavaScriptEmitter.cs" Line="56" Column="6" />
+      <File FileName="ReflectionUtils.cs" Line="17" Column="26" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="EdgeReference" expanded="True">
-            <Node name="ProxyGenerator.cs" selected="True" />
-          </Node>
+          <Node name="EdgeReference" expanded="True" selected="True" />
         </State>
       </Pad>
     </Pads>

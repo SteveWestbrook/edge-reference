@@ -8,15 +8,15 @@ using System.Collections.Concurrent;
 
 namespace EdgeReference
 {
-	public class JavaScriptEmitter
-	{
-		public const string EdgeTypeName = "Edge";
+  public class JavaScriptEmitter
+  {
+    public const string EdgeTypeName = "Edge";
 
-		public const string EdgeModuleName = "edge";
+    public const string EdgeModuleName = "edge";
 
-		public const string EdgeReferenceTypeName = "EdgeReference";
+    public const string EdgeReferenceTypeName = "EdgeReference";
 
-		public const string EdgeReferenceModuleName = "edge-reference";
+    public const string EdgeReferenceModuleName = "edge-reference";
 
     /**
      * 0 - indent
@@ -41,51 +41,51 @@ namespace EdgeReference
 {0}\}";
 
 
-		private static readonly string MemberSeparator = Environment.NewLine + Environment.NewLine;
+    private static readonly string MemberSeparator = Environment.NewLine + Environment.NewLine;
 
-		private const int DefaultIndentWidth = 2;
+    private const int DefaultIndentWidth = 2;
 
-		private StringBuilder buffer;
+    private StringBuilder buffer;
 
-		private int currentIndentWidth;
+    private int currentIndentWidth;
 
-		private string incrementalIndent;
+    private string incrementalIndent;
 
-		/// <summary>
-		/// The name of the JavaScript class.
-		/// </summary>
-		private string javaScriptClassName;
+    /// <summary>
+    /// The name of the JavaScript class.
+    /// </summary>
+    private string javaScriptClassName;
 
-		/// <summary>
-		/// The source type's full name with &quot.&quot; replaced with 
-		/// &quot-&quot;.  Intended for use as a file name.
-		/// </summary>
-		private string javaScriptFullName;
+    /// <summary>
+    /// The source type's full name with &quot.&quot; replaced with 
+    /// &quot-&quot;.  Intended for use as a file name.
+    /// </summary>
+    private string javaScriptFullName;
 
     public JavaScriptEmitter() {
-			this.IndentWidth = DefaultIndentWidth;
+      this.IndentWidth = DefaultIndentWidth;
     }
 
-		public int IndentWidth 
-		{
-			get 
-			{
-				return this.incrementalIndent.Length;
-			}
+    public int IndentWidth 
+    {
+      get 
+      {
+        return this.incrementalIndent.Length;
+      }
 
-			set
-			{
-				this.incrementalIndent = new string (' ', value);
-			}
-		}
+      set
+      {
+        this.incrementalIndent = new string (' ', value);
+      }
+    }
 
-		private string CurrentIndent 
-		{ 
-			get 
-			{
-				return new string(' ', this.currentIndentWidth);
-			}
-		}
+    private string CurrentIndent 
+    { 
+      get 
+      {
+        return new string(' ', this.currentIndentWidth);
+      }
+    }
 
     public override string ToString() 
     {
@@ -94,37 +94,37 @@ namespace EdgeReference
 
     #region Requires
 
-		/// <summary>
-		/// Constructs and appends JavaScript require statements for the file.
-		/// </summary>
-		/// <param name="target">Target.</param>
-		public void AppendBasicRequires(Type target) 
-		{
-			AppendRequire(EdgeTypeName, EdgeModuleName);
+    /// <summary>
+    /// Constructs and appends JavaScript require statements for the file.
+    /// </summary>
+    /// <param name="target">Target.</param>
+    public void AppendBasicRequires(Type target) 
+    {
+      AppendRequire(EdgeTypeName, EdgeModuleName);
 
-			if (target.BaseType != null) {
-				AppendRequire(target.BaseType);
-			}
+      if (target.BaseType != null) {
+        AppendRequire(target.BaseType);
+      }
 
-			this.buffer.AppendLine ();
-		}
-
-    public void AppendRequires(IEnumerable<Type> referenceTypes) {
-      referenceTypes.ForEach((type) => {
-        this.AppendRequire(type);        
-      });
+      this.buffer.AppendLine ();
     }
 
-		private void AppendRequire(string name, string file)
-		{
-			buffer.AppendFormat (
-				CultureInfo.InvariantCulture,
-				"const {0} = require('{1}');",
-				name,
-				file);
+    public void AppendRequires(IEnumerable<Type> referenceTypes) {
+      foreach (Type type in referenceTypes) {
+        this.AppendRequire(type);        
+      }
+    }
 
-			buffer.AppendLine ();
-		}
+    private void AppendRequire(string name, string file)
+    {
+      buffer.AppendFormat (
+        CultureInfo.InvariantCulture,
+        "const {0} = require('{1}');",
+        name,
+        file);
+
+      buffer.AppendLine ();
+    }
 
     private void AppendRequire(Type type) {
       string name = type.Name;
@@ -134,7 +134,7 @@ namespace EdgeReference
         CultureInfo.InvariantCulture,
         "const {0} = require('{1}');",
         name,
-        ReflectionUtils.ConvertFullName(type.FullName)));
+        ReflectionUtils.ConvertFullName(type.FullName));
 
       buffer.AppendLine();
     }
@@ -143,12 +143,12 @@ namespace EdgeReference
 
     #region Class
 
-		public void AppendClassDefinition(Type target) 
-		{
-			string name = target.Name;
-			const string ClassDefinitionTemplate = @"{0}class {1}{2} \{";
+    public void AppendClassDefinition(Type target) 
+    {
+      string name = target.Name;
+      const string ClassDefinitionTemplate = @"{0}class {1}{2} \{";
 
-			string extendsStatement = string.Empty;
+      string extendsStatement = string.Empty;
 
       // If this class inherits from something, so should the proxy.
       // TODO: Look up type names here
@@ -159,91 +159,89 @@ namespace EdgeReference
 
       extendsStatement = string.Concat (" extends", baseClass);
 
-			this.buffer.AppendFormat(
-				CultureInfo.InvariantCulture,
-				ClassDefinitionTemplate,
-				this.CurrentIndent, 
-				name,
-				extendsStatement);
+      this.buffer.AppendFormat(
+        CultureInfo.InvariantCulture,
+        ClassDefinitionTemplate,
+        this.CurrentIndent, 
+        name,
+        extendsStatement);
 
       this.buffer.AppendLine();
       this.buffer.AppendLine();
 
-			// Add indent for future declarations
-			this.currentIndentWidth += this.IndentWidth;
-		}
+      // Add indent for future declarations
+      this.currentIndentWidth += this.IndentWidth;
+    }
 
-		public void AppendClassTermination()
-		{
-			// Outdent
-			this.currentIndentWidth -= this.IndentWidth;
+    public void AppendClassTermination()
+    {
+      // Outdent
+      this.currentIndentWidth -= this.IndentWidth;
 
-			buffer.Append(this.CurrentIndent);
-			buffer.AppendLine("}");
-		}
+      buffer.Append(this.CurrentIndent);
+      buffer.AppendLine("}");
+    }
 
     #endregion Class
 
     #region Properties
 
-		/// <summary>
-		/// Generates and appends a JavaScript property to the ProxyGenerator's internal buffer.
-		/// </summary>
-		/// <param name="source">
-		/// Information about the property to be generated.
-		/// </param>
-		/// <param name="isStatic">
-		/// If set to <c>true</c>, the member is static.
-		/// </param>
-		/// <remarks>
-		/// The property info provided could be used to determine whether the member 
-		/// is static; however a parameter is more convenient.
-		/// </remarks>
-		public void AppendProperty(PropertyInfo source, bool isStatic)
-		{
-			string baseIndent = this.CurrentIndent;
-			string staticModifier = isStatic ? "static " : string.Empty;
-			string selfReference = isStatic ? this.javaScriptClassName : "this";
-			string typeModifier = DetermineTypeModifier (source.PropertyType);
+    /// <summary>
+    /// Generates and appends a JavaScript property to the ProxyGenerator's internal buffer.
+    /// </summary>
+    /// <param name="source">
+    /// Information about the property to be generated.
+    /// </param>
+    /// <param name="isStatic">
+    /// If set to <c>true</c>, the member is static.
+    /// </param>
+    /// <remarks>
+    /// The property info provided could be used to determine whether the member 
+    /// is static; however a parameter is more convenient.
+    /// </remarks>
+    public void AppendProperty(PropertyInfo source, bool isStatic)
+    {
+      string baseIndent = this.CurrentIndent;
+      string staticModifier = isStatic ? "static " : string.Empty;
 
       string getterBody = GenerateGetterBody(
         source.Name,
         source.PropertyType,
         isStatic);
 
-      string setterBody = GenerateSetterBody()
+      string setterBody = GenerateSetterBody(
         source.Name,
         source.PropertyType,
         isStatic);
 
-			Action<string> formatAccessor = (formatString, body) => {
-				this.buffer.AppendFormat(
-					CultureInfo.InvariantCulture,
-					formatString,
-					baseIndent,
-					staticModifier,
-					source.Name,
-					body);
-			};
+      Action<string, string> formatAccessor = (formatString, body) => {
+        this.buffer.AppendFormat(
+          CultureInfo.InvariantCulture,
+          formatString,
+          baseIndent,
+          staticModifier,
+          source.Name,
+          body);
+      };
 
-			// used twice
-			bool canWrite = source.CanWrite && source.GetSetMethod().IsPublic;
+      // used twice
+      bool canWrite = source.CanWrite && source.GetSetMethod().IsPublic;
 
-			// Note that public properties are defined as properties with a 
-			// public getter OR setter - therefore make sure the accessor is 
-			// public.
-			if (source.CanRead && source.GetGetMethod().IsPublic) {
-				formatAccessor(GetterTemplate, getterBody);
+      // Note that public properties are defined as properties with a 
+      // public getter OR setter - therefore make sure the accessor is 
+      // public.
+      if (source.CanRead && source.GetGetMethod().IsPublic) {
+        formatAccessor(GetterTemplate, getterBody);
 
-				if (canWrite) {
-					buffer.AppendFormat(MemberSeparator);
-				}
-			}
+        if (canWrite) {
+          buffer.AppendFormat(MemberSeparator);
+        }
+      }
 
-			if (canWrite) {
-				formatAccessor(SetterTemplate, setterBody);
-			}
-		}
+      if (canWrite) {
+        formatAccessor(SetterTemplate, setterBody);
+      }
+    }
 
     private string GenerateGetterBody(string name, Type type, bool isStatic) {
       string result;
@@ -273,7 +271,7 @@ namespace EdgeReference
       string result;
 
       if (ReflectionUtils.IsReferenceType(type)) {
-        result = string.format(
+        result = string.Format(
           CultureInfo.InvariantCulture,
           "{0}{1}Reference.{2}({3}value._edgeId));",
           this.CurrentIndent,
@@ -281,7 +279,7 @@ namespace EdgeReference
           name,
           isStatic ? string.Empty : "this._referenceId, ");
       } else {
-        result = string.format(
+        result = string.Format(
           CultureInfo.InvariantCulture,
           "{0}{1}Reference.{2}({3}value));",
           this.CurrentIndent,
@@ -299,7 +297,7 @@ namespace EdgeReference
 
     public void AppendFunction(MethodInfo source, bool isStatic) {
       // Indent
-			this.currentIndentWidth += this.IndentWidth;
+      this.currentIndentWidth += this.IndentWidth;
 
       // Append argument conversions
       this.AppendArgumentConversions(source);
@@ -321,14 +319,14 @@ namespace EdgeReference
       this.buffer.AppendLine(GenerateReturnLine(source.ReturnType));
 
       // Outdent
-			this.currentIndentWidth -= this.IndentWidth;
+      this.currentIndentWidth -= this.IndentWidth;
     }
 
     private void AppendArgumentConversions(MethodInfo source)
     {
-      source.GetParameters().ForEach((parameter) => {
-        AppendArgumentConversion(parmaeter);
-      });
+      foreach (ParameterInfo parameter in source.GetParameters()) {
+            AppendArgumentConversion(parameter);
+      }
     }
 
     private void AppendArgumentConversion(ParameterInfo argument) 
@@ -365,7 +363,7 @@ namespace EdgeReference
 
     private string GenerateReturnLine(Type returnType) {
       const string ComplexReturnLineTemplate = "{0}return new {1}(result);";
-      const string SimpleReturnLineTemplate = "{0}return result;"
+      const string SimpleReturnLineTemplate = "{0}return result;";
 
       if (ReflectionUtils.IsReferenceType(returnType)) {
         return string.Format(
