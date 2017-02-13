@@ -13,3 +13,13 @@ class EdgeReference {
     
   }
 }
+
+/*
+Generate a .NET assembly
+Generate a JS wrapper class with the appropriate name that references that 
+  assembly.
+Wrapper will call like this:
+*/
+
+
+

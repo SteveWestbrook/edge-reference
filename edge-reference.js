@@ -1,23 +1,44 @@
 
-function Get(name) {
+function get(name) {
   
 }
 
-function Set(name, value) {
+function set(name, value) {
   
 }
 
-function GetString(name) {
+function getString(name) {
 }
 
-function SetString(name, value) {
+function setString(name, value) {
 }
 
-function GetUserDefinedType(name) {
+function getUserDefinedType(name) {
 }
 
-function SetUserDefinedType(name, value) {
+function setUserDefinedType(name, value) {
 }
+
+function invoke(name) {
+  
+  
+}
+
+function invokeString(name) {
+  
+}
+
+function invokeUserDefinedType(name) {
+  
+}
+
+// Converting args
+// Go through each arg
+// Process each arg
+// Pass in a string representing the fetch for each type
+// Strings are by "<value>"
+// byvals - direct
+// udts - this.PullReference(<id>)
 
 class Test {
 
