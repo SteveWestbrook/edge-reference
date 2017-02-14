@@ -4,9 +4,9 @@ const path = require('path');
 describe('generator', () => {
   describe('#generate()', () => {
     it('should successfully generate a proxy for a .NET assembly', (done) => {      
-      generator.generateProxy(
-        'DotNetTests.TestType1',
-        path.join(__dirname, 'DotNetTests.dll'),
+      generator.generate(
+        'DotNetTest.TestType1',
+        path.join(__dirname, 'DotNetTest.dll'),
         path.resolve(__dirname, '../junk'),
         done);
 

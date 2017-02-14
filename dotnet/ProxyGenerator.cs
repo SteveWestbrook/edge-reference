@@ -6,6 +6,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using NUnit.Core;
 
 namespace EdgeReference
 {
@@ -33,12 +34,13 @@ namespace EdgeReference
       string assemblyPath,
       Action<string, string> classGeneratedCallback)
     {
+
       ProxyGenerator generator = new ProxyGenerator ();
       Assembly owningAssembly = Assembly.ReflectionOnlyLoadFrom (assemblyPath);
       Type type = owningAssembly.GetType (typeNameWithNamespace);
 
       generator.classGenerated = classGeneratedCallback;
-      generator.Generate (type);
+      generator.Generate(type);
     }
 
     private void Generate(Type target)
@@ -48,13 +50,13 @@ namespace EdgeReference
       // this.javaScriptFullName = target.FullName.Replace ('.', '-');
       this.emitter = new JavaScriptEmitter();
 
-      PropertyInfo[] staticProperties = RetrieveProperties(target, BindingFlags.Static | BindingFlags.Public);
+      PropertyInfo[] staticProperties = RetrieveProperties(target, BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
-      PropertyInfo[] instanceProperties = RetrieveProperties(target, BindingFlags.Instance | BindingFlags.Public);
+			PropertyInfo[] instanceProperties = RetrieveProperties(target, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
-      MethodInfo[] staticMethods = this.RetrieveMethods (target, BindingFlags.Static | BindingFlags.Public);
+			MethodInfo[] staticMethods = this.RetrieveMethods (target, BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
-      MethodInfo[] instanceMethods = this.RetrieveMethods(target, BindingFlags.Instance | BindingFlags.Public);
+			MethodInfo[] instanceMethods = this.RetrieveMethods(target, BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
       this.emitter.AppendBasicRequires(target);
 
@@ -92,8 +94,7 @@ namespace EdgeReference
 
       this.emitter.AppendClassDefinition(target);
 
-      // TODO: Constructors - call super, pass params
-
+      // TODO: Constructors - call super, pass params	
       foreach (PropertyInfo info in staticProperties) { 
         this.emitter.AppendProperty(info, true);
       };
@@ -101,11 +102,11 @@ namespace EdgeReference
       foreach (PropertyInfo info in instanceProperties) {
         this.emitter.AppendProperty(info, false);
       };
-
+									
       foreach (MethodInfo info in staticMethods) {
         this.emitter.AppendFunction(info, true);
       };
-
+									
       foreach (MethodInfo info in instanceMethods) {
         this.emitter.AppendFunction(info, false);
       };

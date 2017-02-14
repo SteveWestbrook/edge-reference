@@ -4,23 +4,42 @@ const path = require('path');
 
 const proxyGenerator = edge.func(function() {
   /*
+    #r "./dotnet/bin/Debug/EdgeReference.dll"
 
-    // using EdgeReference;
-    // using System.Threading.Tasks;
+    using System;
+    using System.Threading.Tasks;
+    using EdgeReference;
 
-    public class Startup() {
-      public async Task<object> Invoke(object input) {
-        Console.WriteLine("huh");
+    public class Startup {
+      private class Result
+      {
+        public string name;
+        public string script;
+      }
+
+      public async Task<dynamic> Invoke(dynamic input) {
+        Action<string, string> completion =
+          new Action<string, string>((name, script) => {
+            Result output = new Result();
+            output.name = name;
+            output.script = script;
+
+            input.callback(output);
+          });
+
+        Console.WriteLine("1");
+
+        ProxyGenerator.Generate(
+          input.typeFullName,
+          input.assemblyLocation,
+          completion);
+        Console.WriteLine("2");
+
+        return null;
       }
     }
   */
 });
-
-        // return ProxyGenerator.Generate(
-          // input.typeFullName,
-          // input.assemblyLocation,
-          // (Action<string, string>)input.callback
-        // );
 
 module.exports = {
   generate: generateProxy

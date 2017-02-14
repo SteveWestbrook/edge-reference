@@ -25,9 +25,9 @@ namespace EdgeReference
      * 3 - additional indent
      * 4 - property body
      */
-    private const string GetterTemplate = @"{0}{1}get {2}() \{
+    private const string GetterTemplate = @"{0}{1}get {2}() {{
 {3}
-{0}\}";
+{0}}}";
 
     /**
      * 0 - indent
@@ -36,9 +36,9 @@ namespace EdgeReference
      * 3 - additional indent
      * 4 - property body
      */
-    private const string SetterTemplate = @"{0}{1}set {2}(value) \{
+    private const string SetterTemplate = @"{0}{1}set {2}(value) {{
 {3}
-{0}\}";
+{0}}}";
 
 
     private static readonly string MemberSeparator = Environment.NewLine + Environment.NewLine;
@@ -64,6 +64,7 @@ namespace EdgeReference
 
     public JavaScriptEmitter() {
       this.IndentWidth = DefaultIndentWidth;
+			this.buffer = new StringBuilder();
     }
 
     public int IndentWidth 
@@ -146,10 +147,9 @@ namespace EdgeReference
     public void AppendClassDefinition(Type target) 
     {
       string name = target.Name;
-      const string ClassDefinitionTemplate = @"{0}class {1}{2} \{";
+      const string ClassDefinitionTemplate = @"{0}class {1}{2} {{";
 
       string extendsStatement = string.Empty;
-
       // If this class inherits from something, so should the proxy.
       // TODO: Look up type names here
       string baseClass =
@@ -157,7 +157,7 @@ namespace EdgeReference
         ? target.BaseType.Name
         : EdgeReferenceTypeName;
 
-      extendsStatement = string.Concat (" extends", baseClass);
+      extendsStatement = string.Concat(" extends", baseClass);
 
       this.buffer.AppendFormat(
         CultureInfo.InvariantCulture,
@@ -225,12 +225,14 @@ namespace EdgeReference
       };
 
       // used twice
-      bool canWrite = source.CanWrite && source.GetSetMethod().IsPublic;
+			MethodInfo setter = source.GetSetMethod();
+			MethodInfo getter = source.GetGetMethod();
+      bool canWrite = source.CanWrite && setter != null && setter.IsPublic;
 
       // Note that public properties are defined as properties with a 
       // public getter OR setter - therefore make sure the accessor is 
       // public.
-      if (source.CanRead && source.GetGetMethod().IsPublic) {
+      if (source.CanRead && getter != null && getter.IsPublic) {
         formatAccessor(GetterTemplate, getterBody);
 
         if (canWrite) {
