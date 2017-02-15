@@ -1,5 +1,5 @@
 /**
- * index of is-valid-var-name module
+ * EdgeReference class
  * Copyright(c) 2017 Steve Westbrook
  * MIT Licensed
  */

@@ -1,5 +1,5 @@
 /**
- * index of is-valid-var-name module
+ * index of edge-reference module
  * Copyright(c) 2017 Steve Westbrook
  * MIT Licensed
  */
@@ -8,5 +8,5 @@
 
 const EdgeReference = require('./src/edge-reference.js');
 
-module.exports = EdgeReference;
+module.exports.EdgeReference = EdgeReference;
 
