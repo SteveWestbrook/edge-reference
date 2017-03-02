@@ -11,7 +11,9 @@ const edge = require('edge');
 module.exports = collectorFactory;
 
 /**
- * .NET function to remove a reference
+ * Removes a reference in .NET code to an object that is no longer used 
+ * by JavaScript code.  If no JS references remain, the object is reclaimed.
+ * 
  * @param input {long} The ID to be removed from the reference collection.
  */
 var Unregister = edge.func(function() {/*
@@ -38,8 +40,11 @@ var Unregister = edge.func(function() {/*
 
 
 /**
- * Generates a callback that will clean up .NET references to a 
+ * Generates and returns a callback that will clean up .NET references to a 
  * garbage-collected JavaScript object.
+ * 
+ * @param referenceId {Number} The id of the object to be reclaimed when the 
+ * returned callback is executed.
  */
 function collectorFactory(referenceId) {
   return () => {
@@ -49,12 +54,10 @@ function collectorFactory(referenceId) {
 
 /**
  * Called when a reference is reclaimed by the garbage collector.
+ * 
+ * @param id {Number} The id of the object to be reclaimed.
  */
 function referenceCollected(id) {
-  console.log('gc underway for %d', id);
-
   // No callback needed - just kick off the dereg process.
   Unregister(id);
 }
-
-

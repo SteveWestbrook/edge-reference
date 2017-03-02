@@ -50,32 +50,16 @@ class EdgeReference {
   /**
    * Begins tracking a reference in order to allow tracking of when it is 
    * garbage collected.
+   * 
    * @param toRegister {EdgeReference} The object to be tracked.
    */
   static register(toRegister) {
+    // The tracker here has to be generated in order to store a reference to 
+    // the object's _referenceId, since after GC the reference is of course 
+    // gone.
     weak(toRegister, tracker(toRegister._referenceId));
   }
 
-  /**
-   * Removes a reference in .NET code to an object that is no longer used 
-   * by JavaScript code.  If no JS references remain, the object is reclaimed.
-   */
-  static unregister(removeID) {
-    Unregister(removeID);
-  }
-
-  /**
-   * Checks the provided .NET proxy object against this one.
-   * @param against {EdgeReference} A .NET proxy.  If it represents the same 
-   *        underlying .NET object, this function will return true.
-   * @return {Boolean} If the parameter provided is non-null and has the same 
-   *         _referenceId property as this instance, returns true.
-   */
-  referenceEquals(against) {
-    return against &&
-      against._referenceId === this._referenceId;
-  }
- 
   /**
    * Calls the specified function and either returns its converted value or 
    * calls the specified callback with the converted value included.
@@ -122,6 +106,18 @@ class EdgeReference {
 
       return result;
     }
+  }
+
+  /**
+   * Checks the provided .NET proxy object against this one.
+   * @param against {EdgeReference} A .NET proxy.  If it represents the same 
+   *        underlying .NET object, this function will return true.
+   * @return {Boolean} If the parameter provided is non-null and has the same 
+   *         _referenceId property as this instance, returns true.
+   */
+  referenceEquals(against) {
+    return against &&
+      against._referenceId === this._referenceId;
   }
 
 }
