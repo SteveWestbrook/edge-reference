@@ -8,28 +8,10 @@
 
 const edge = require('edge');
 const weak = require('weak');
-
-/**
- * .NET function to remove a reference
- * @param input {long} The ID to be removed from the reference collection.
- */
-var Unregister = edge.func(function() {/*
-  #r "EdgeReference.dll"
-
-  using EdgeReference;
-  using System.Threading.Tasks;
-
-  public class Startup {
-    public async Task<object> Invoke(object input) {
-      System.Console.WriteLine(".NET");
-      System.Console.WriteLine(input);
-      ReferenceManager.Instance.RemoveReference((long)input);
-      return null;
-    }
-  }
-*/});
+const tracker = require('./edge-track.js');
 
 var refs = [];
+
 /**
  * A base class for proxies to .NET objects.  Contains some useful tools to 
  * make references match one another.
@@ -40,16 +22,13 @@ class EdgeReference {
    *        be passed to the constructor with matching parameters.
    */
   constructor(referenceId, referenceConstructor, constructorArgs) {
-    // Ensure `this` is always consistent
-    this.register = this.register.bind(this);
-
     if (referenceId) {
       this._referenceId = referenceId;
     } else {
       this._referenceId = referenceConstructor(constructorArgs, true);
     }
 
-    this.register(this);
+    EdgeReference.register(this);
   }
 
   /**
@@ -69,6 +48,23 @@ class EdgeReference {
   }
 
   /**
+   * Begins tracking a reference in order to allow tracking of when it is 
+   * garbage collected.
+   * @param toRegister {EdgeReference} The object to be tracked.
+   */
+  static register(toRegister) {
+    weak(toRegister, tracker(toRegister._referenceId));
+  }
+
+  /**
+   * Removes a reference in .NET code to an object that is no longer used 
+   * by JavaScript code.  If no JS references remain, the object is reclaimed.
+   */
+  static unregister(removeID) {
+    Unregister(removeID);
+  }
+
+  /**
    * Checks the provided .NET proxy object against this one.
    * @param against {EdgeReference} A .NET proxy.  If it represents the same 
    *        underlying .NET object, this function will return true.
@@ -78,23 +74,6 @@ class EdgeReference {
   referenceEquals(against) {
     return against &&
       against._referenceId === this._referenceId;
-  }
-
-  /**
-   * Begins tracking a reference in order to allow tracking of when it is 
-   * garbage collected.
-   * @param toRegister {EdgeReference} The object to be tracked.
-   */
-  register(toRegister) {
-    refs.push(weak(toRegister, this.referenceCollected));
-  }
-
-  /**
-   * Removes a reference in .NET code to an object that is no longer used 
-   * by JavaScript code.  If no JS references remain, the object is reclaimed.
-   */
-  static unregister(removeID) {
-    Unregister(removeID);
   }
  
   /**
@@ -144,15 +123,6 @@ class EdgeReference {
       return result;
     }
   }
-
-  /**
-   * Called when a reference is reclaimed by the garbage collector.
-   */
-  referenceCollected() {
-    console.log('gc underway for %d', this._referenceId);
-    // EdgeReference.unregister(this._referenceId);
-  }
-
 
 }
 
