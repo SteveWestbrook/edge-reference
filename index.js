@@ -8,5 +8,5 @@
 
 const EdgeReference = require('./src/edge-reference.js');
 
-module.exports.EdgeReference = EdgeReference;
+module.exports = EdgeReference;
 

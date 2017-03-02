@@ -14,21 +14,6 @@ const referenceFactory = edge.func(
 );
 
 class Scratchpad {
-  /*
-   * @param constructorArgs An associative array containing the parameters to 
-   *        be passed to the constructor with matching parameters.
-   */
-  constructor(referenceId, constructorArgs) {
-    if (referenceId) {
-      this._referenceId = referenceId;
-    } else {
-      this._referenceId = referenceConstructor();
-
-      // TODO: underlying constructor
-    }
-
-    EdgeReference.register(this);
-  }
 
   get _edgeId() {
     return this._referenceId;
