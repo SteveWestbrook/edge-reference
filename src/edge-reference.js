@@ -33,7 +33,8 @@ class EdgeReference {
 
   /**
    * Gets the reference ID for this instance.  This value is used to retrieve 
-   * the underlying .NET object that corresponds to this instance.
+   * the underlying .NET object that corresponds to this instance.  Two proxies
+   * with matching _referenceId values represent the same .NET object instance.
    */
   get _referenceId() {
     return this.__referenceId;
@@ -48,8 +49,10 @@ class EdgeReference {
   }
 
   /**
-   * Begins tracking a reference in order to allow tracking of when it is 
-   * garbage collected.
+   * Begins tracking a reference in order to allow cleanup when it is 
+   * garbage collected.  This function is intended for internal use and does 
+   * not generally need to be called by consumers.  Misuse will lead to memory
+   * leaks.
    * 
    * @param toRegister {EdgeReference} The object to be tracked.
    */
@@ -109,15 +112,15 @@ class EdgeReference {
   }
 
   /**
-   * Checks the provided .NET proxy object against this one.
-   * @param against {EdgeReference} A .NET proxy.  If it represents the same 
+   * Compares the .NET proxy provided against this instance.
+   * @param compareTo {EdgeReference} A .NET proxy.  If it represents the same 
    *        underlying .NET object, this function will return true.
    * @return {Boolean} If the parameter provided is non-null and has the same 
    *         _referenceId property as this instance, returns true.
    */
-  referenceEquals(against) {
-    return against &&
-      against._referenceId === this._referenceId;
+  referenceEquals(compareTo) {
+    return compareTo &&
+      compareTo._referenceId === this._referenceId;
   }
 
 }
