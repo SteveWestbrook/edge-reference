@@ -17,7 +17,7 @@ module.exports = collectorFactory;
  * @param input {long} The ID to be removed from the reference collection.
  */
 var Unregister = edge.func(function() {/*
-  #r "EdgeReference.dll"
+  #r "./bin/EdgeReference.dll"
 
   using EdgeReference;
   using System.Threading.Tasks;

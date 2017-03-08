@@ -11,13 +11,18 @@
     "mocha": "^3.2.0"
   },
   "files": [
-  	"src/",
-	"dotnet/",
-	"index.js",
-	"package.json"
+    "src/",
+    "bin/EdgeReference.dll",
+    "index.js",
+    "package.json",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "test": "mocha"
+    "test": "npm run build && mocha",
+    "build": "./edge-reference-build.sh",
+    "prestart": "npm run build",
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "Steven Westbrook <StevenAWestbrook@gmail.com>",
