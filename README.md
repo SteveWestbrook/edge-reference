@@ -1,4 +1,4 @@
-# edge-generator
+# edge-reference
 
 A [node.js](https://nodejs.org) package and associated .NET components that allow JavaScript code to create, access, and maintain references to live .NET objects.
 

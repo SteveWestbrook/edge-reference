@@ -7,8 +7,11 @@
 'use strict';
 
 const edge = require('edge');
+const path = require('path');
 
 module.exports = collectorFactory;
+
+const bindir = path.resolve(__dirname, '../bin');
 
 /**
  * Removes a reference in .NET code to an object that is no longer used 
@@ -16,8 +19,9 @@ module.exports = collectorFactory;
  * 
  * @param input {long} The ID to be removed from the reference collection.
  */
-var Unregister = edge.func(function() {/*
-  #r "./bin/EdgeReference.dll"
+var Unregister = edge.func(
+  `
+  #r "${bindir}/EdgeReference.dll"
 
   using EdgeReference;
   using System.Threading.Tasks;
@@ -36,7 +40,7 @@ var Unregister = edge.func(function() {/*
       return null;
     }
   }
-*/});
+`);
 
 
 /**

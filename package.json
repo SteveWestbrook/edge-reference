@@ -20,11 +20,23 @@
   ],
   "scripts": {
     "test": "npm run build && mocha",
-    "build": "./edge-reference-build.sh",
+    "build": "node ./script/edge-reference-build.js",
     "prestart": "npm run build",
     "prepublish": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+ 		"edge",
+		"c#",
+		"net",
+		".net",
+		"mono",
+		"csharp",
+		"managed",
+		"reference",
+		"integration",
+		"callback",
+		"clr"
+  ],
   "author": "Steven Westbrook <StevenAWestbrook@gmail.com>",
   "license": "MIT"
 }
